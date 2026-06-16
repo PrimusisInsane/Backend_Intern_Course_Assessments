@@ -1,11 +1,8 @@
 SQLAlchemy
 Alembic
 psycopg2-binary
-PyMongo
-Motor
-PostgreSQL
-MongoDB
 Poetry
 Pydantic
 FastAPI
 Uvicorn
+PyMongo
