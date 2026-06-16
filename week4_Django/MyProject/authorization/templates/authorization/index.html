@@ -3,20 +3,10 @@
 <head><title>Authorizations</title></head>
 <body>
   <h1>My Authorizations</h1>
-
-  <form method="post">
-    {% csrf_token %}
-    <input name="firstname" placeholder="First name">
-  <input name="lastname" placeholder="Last name">
-  <input name="joined_date" type="date">
-  <input name="done" type="checkbox" value="true">
-  <input name ="phone number" placeholder="Phone number">
-    <button type="submit">Add</button>
-  </form>
-
+  <a href="{% url 'index' %}">Add New Member</a>
   <ul>
-    {% for authorization in authorizations %}
-      <li>{{ authorization.title }}</li>
+    {% for member in authorization %}
+      <li>{{ member.firstname }} {{ member.lastname }} - {{ member.phone }} - {{ member.joined_date }}</li>
     {% empty %}
       <li>Nothing yet.</li>
     {% endfor %}

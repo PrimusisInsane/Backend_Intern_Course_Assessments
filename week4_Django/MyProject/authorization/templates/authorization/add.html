@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><title>Add Member</title></head>
+<body>
+  <h1>Add New Member</h1>
+  <form method="post">
+    {% csrf_token %}
+    <input name="firstname" placeholder="First name"><br>
+    <input name="lastname" placeholder="Last name"><br>
+    <input name="joined_date" type="date"><br>
+    <input name="done" type="checkbox" value="true"> Done<br>
+    <input name="phone number" placeholder="Phone number"><br>
+    <button type="submit">Add</button>
+  </form>
+  <a href="{% url 'authorization' %}">Back to list</a>
+</body>
+</html>
