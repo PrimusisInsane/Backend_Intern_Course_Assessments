@@ -1,21 +1,22 @@
-from os import name
+from rest_framework import viewsets, permissions, generics
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from .models import Task
+from .serializers import TaskSerializer, UserSerializer
 
-from django.shortcuts import render, redirect
-from .models import Authorization
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.AllowAny]  # anyone can register
 
-def index(request):
-    authorization = Authorization.objects.all()
-    return render(request, 'authorization/index.html', {'authorization': authorization})
+class TaskViewSet(viewsets.ModelViewSet):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]  # must be logged in
 
-def add(request):
-    if request.method == 'POST':
-       firstname = request.POST.get('firstname')
-       lastname = request.POST.get('lastname')
-       joined_date = request.POST.get('joined_date')
-       done = request.POST.get('done') == 'true'
-       phone = request.POST.get('phone number')
-        
-       if firstname and lastname:
-            Authorization.objects.create(firstname=firstname, lastname=lastname, joined_date=joined_date, done=done, phone=phone)
-       return redirect('authorization')
-    return render(request, 'authorization/add.html')
+    def get_queryset(self):
+        # ownership rule — users only see their own tasks
+        return Task.objects.filter(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        # automatically set owner to current user on create
+        serializer.save(owner=self.request.user)

@@ -1,11 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class Authorization(models.Model):
-    firstname = models.CharField(max_length=200)
-    lastname = models.CharField(max_length=200, default = "")
+class Task(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
+    title = models.CharField(max_length=200)
+    description = models.TextField(default="")
     done = models.BooleanField(default=False)
-    joined_date = models.DateField(null=True)
-    phone = models.CharField(max_length=20, default = "")
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.firstname} {self.lastname}"
+        return f"{self.title} - {self.owner.username}"

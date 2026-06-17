@@ -1,9 +1,8 @@
 from django.contrib import admin
-from .models import Authorization
+from .models import Task
 
-
-class AuthAdmin(admin.ModelAdmin):
-  list_display = ("firstname", "lastname", "joined_date", "done", "phone")
-  
-
-admin.site.register(Authorization, AuthAdmin)
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ['title', 'owner', 'done', 'created_at']
+    list_filter = ['done']
+    search_fields = ['title', 'owner__username']
