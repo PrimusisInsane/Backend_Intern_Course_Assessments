@@ -7,4 +7,3 @@ venv/
 *.db
 .vscode/
 alembic/versions/__pycache__/
-images/
