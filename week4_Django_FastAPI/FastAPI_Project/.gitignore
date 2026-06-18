@@ -2,5 +2,5 @@
 *.pyc
 __pycache__/
 alembic/versions/__pycache__/
-images
+images/
 
