@@ -11,20 +11,20 @@ router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 @router.post("/")
 def create_task(task: TaskCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return create_task_service(db, task)
+    return create_task_service(db, task, current_user.id)
 
 @router.get("/")
 def get_tasks(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return list_tasks_service(db)
+    return list_tasks_service(db, current_user.id)  
 
 @router.get("/{task_id}")
 def get_task(task_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return get_task_service(db, task_id)
+    return get_task_service(db, task_id, current_user.id)  
 
 @router.put("/{task_id}")
 def update_task(task_id: int, task: TaskCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return update_task_service(db, task_id, task)
+    return update_task_service(db, task_id, task, current_user.id) 
 
 @router.delete("/{task_id}")
 def delete_task(task_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return delete_task_service(db, task_id)
+    return delete_task_service(db, task_id, current_user.id) 

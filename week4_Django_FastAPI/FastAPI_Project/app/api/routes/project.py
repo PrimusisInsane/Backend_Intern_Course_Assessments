@@ -16,24 +16,24 @@ router = APIRouter(prefix="/projects", tags=["Projects"])
 
 @router.post("/")
 def create_project(project: ProjectCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return create_project_service(db, project)
+    return create_project_service(db, project, current_user.id)
 
 @router.get("/")
 def get_projects(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return list_projects_service(db)
+    return list_projects_service(db, current_user.id)
 
 @router.get("/{project_id}")
 def get_project(project_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return get_project_service(db, project_id)
+    return get_project_service(db, project_id, current_user.id)
 
 @router.delete("/{project_id}")
 def delete_project(project_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return delete_project_service(db, project_id)
+    return delete_project_service(db, project_id, current_user.id)
 
 @router.put("/{project_id}")
 def update_project(project_id: int, project: ProjectCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return update_project_service(db, project_id, project)
+    return update_project_service(db, project_id, project, current_user.id)
 
 @router.get("/{project_id}/tasks", response_model=list[TaskResponse])
 def get_project_tasks(project_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return get_project_tasks_service(db, project_id)
+    return get_project_tasks_service(db, project_id, current_user.id)

@@ -31,7 +31,7 @@ def update_task(db: Session, task_id: int, title: str = None, project_id: int = 
     db.refresh(task)
     return task
 
-def get_tasks(db: Session, task_id: int):
+def get_task_by_id(db: Session, task_id: int):
     return db.query(Task).filter(Task.id == task_id).first()
 
 def delete_task(db: Session, task_id: int):

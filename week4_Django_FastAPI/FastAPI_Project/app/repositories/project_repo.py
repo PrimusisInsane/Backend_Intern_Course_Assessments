@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from app.models.project_model import Project
 
-def create_project(db: Session, name: str, project_id: int):
-    project = Project(name=name, id=project_id)
+def create_project(db: Session, name: str):
+    project = Project(name=name)
     db.add(project)
     db.commit()
     db.refresh(project)
