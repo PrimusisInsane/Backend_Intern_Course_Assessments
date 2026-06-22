@@ -16,6 +16,7 @@ type Project {
 type Task {
   id: Int!
   title: String!
+  done: Boolean
   userId: Int!
   projectId: Int!
 }
@@ -34,7 +35,7 @@ type Query {
   project(id: Int!): Project!
   projectTasks(projectId: Int!): [Task!]!
 
-  tasks: [Task!]!
+ tasks(limit: Int, offset: Int, done: Boolean): [Task!]!
   task(id: Int!): Task!
 }
 

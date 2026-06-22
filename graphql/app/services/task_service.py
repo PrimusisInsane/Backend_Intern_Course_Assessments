@@ -6,8 +6,15 @@ from fastapi import HTTPException
 def create_task_service(db, title: str, project_id: int, user_id: int):
     return create_task(db, title, project_id, user_id)
 
-def list_tasks_service(db, user_id: int):
-    return db.query(Task).filter(Task.user_id == user_id).all()
+def list_tasks_service(db, user_id: int, limit = None, offset= None, done = None):
+    query =  db.query(Task).filter(Task.user_id == user_id)
+    if done is not None:
+        query = query.filter(Task.done == done)
+    if offset:
+        query = query.offset(offset)
+    if limit:
+        query = query.limit(limit)
+    return query.all()
 
 def get_task_service(db, task_id: int, user_id: int):
     task = get_task_by_id(db, task_id)

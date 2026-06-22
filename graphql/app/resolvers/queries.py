@@ -64,12 +64,12 @@ def resolve_project_tasks(_, info, projectId):
 
 
 @query.field("tasks")
-def resolve_tasks(_, info):
+def resolve_tasks(_, info, limit=None, offset=None, done=None):
     user = info.context["user"]
     db = info.context["db"]
     if not user:
         raise Exception("Not authenticated")
-    return list_tasks_service(db, user.id)
+    return list_tasks_service(db, user.id, limit, offset, done)
 
 
 @query.field("task")
@@ -79,7 +79,6 @@ def resolve_task(_, info, id):
     if not user:
         raise Exception("Not authenticated")
     return get_task_service(db, id, user.id)
-
 
 from ariadne import ObjectType
 
