@@ -1,0 +1,82 @@
+type User {
+  id: Int!
+  name: String!
+  email: String!
+  age: Int
+  role: String!
+  tasks: [Task!]!
+}
+
+type Project {
+  id: Int!
+  name: String!
+  tasks: [Task!]!
+}
+
+type Task {
+  id: Int!
+  title: String!
+  userId: Int!
+  projectId: Int!
+}
+
+type AuthPayload {
+  accessToken: String!
+  tokenType: String!
+}
+
+type Query {
+  me: User!
+  users: [User!]!
+  user(id: Int!): User!
+
+  projects: [Project!]!
+  project(id: Int!): Project!
+  projectTasks(projectId: Int!): [Task!]!
+
+  tasks: [Task!]!
+  task(id: Int!): Task!
+}
+
+input RegisterInput {
+  name: String!
+  email: String!
+  age: Int!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input CreateProjectInput {
+  name: String!
+}
+
+input UpdateProjectInput {
+  name: String
+}
+
+input CreateTaskInput {
+  title: String!
+  projectId: Int!
+}
+
+input UpdateTaskInput {
+  title: String
+  projectId: Int
+}
+
+type Mutation {
+  register(input: RegisterInput!): AuthPayload!
+  login(input: LoginInput!): AuthPayload!
+
+  createProject(input: CreateProjectInput!): Project!
+  updateProject(id: Int!, input: UpdateProjectInput!): Project!
+  deleteProject(id: Int!): Boolean!
+
+  createTask(input: CreateTaskInput!): Task!
+  updateTask(id: Int!, input: UpdateTaskInput!): Task!
+  deleteTask(id: Int!): Boolean!
+}
