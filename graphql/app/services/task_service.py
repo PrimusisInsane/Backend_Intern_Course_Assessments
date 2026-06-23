@@ -24,7 +24,7 @@ def get_task_service(db, task_id: int, user_id: int):
         raise HTTPException(status_code=403, detail="Not your task")
     return task
 
-def update_task_service(db, task_id: int, title: str, project_id: int, user_id: int):
+def update_task_service(db, task_id: int, title: str, project_id: int, done: bool, user_id: int):
     task = get_task_by_id(db, task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -34,6 +34,8 @@ def update_task_service(db, task_id: int, title: str, project_id: int, user_id: 
         task.title = title
     if project_id is not None:
         task.project_id = project_id
+    if done is not None:
+        task.done = done
     db.commit()
     db.refresh(task)
     return task

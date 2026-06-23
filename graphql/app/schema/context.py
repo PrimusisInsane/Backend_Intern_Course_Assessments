@@ -4,6 +4,7 @@ from app.repositories.user_repo import get_user_by_id
 
 async def get_context(request, data=None):
     db = SessionLocal()
+    request.state.db_session = db
     user = None
 
     auth_header = request.headers.get("authorization")

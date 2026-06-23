@@ -31,7 +31,7 @@ type Query {
   users: [User!]!
   user(id: Int!): User!
 
-  projects: [Project!]!
+  projects(limit: Int, offset: Int): [Project!]!
   project(id: Int!): Project!
   projectTasks(projectId: Int!): [Task!]!
 
@@ -67,6 +67,7 @@ input CreateTaskInput {
 input UpdateTaskInput {
   title: String
   projectId: Int
+  done : Boolean
 }
 
 type Mutation {

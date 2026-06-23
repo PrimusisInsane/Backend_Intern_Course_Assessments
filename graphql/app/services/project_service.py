@@ -11,8 +11,13 @@ def create_project_service(db, name: str, user_id: int):
     db.commit()
     return project
 
-def list_projects_service(db, user_id: int):
-    return db.query(Project).join(Membership).filter(Membership.user_id == user_id).all()
+def list_projects_service(db, user_id: int, limit=None, offset=None):
+    query = db.query(Project).join(Membership).filter(Membership.user_id == user_id)
+    if offset:
+        query = query.offset(offset)
+    if limit:
+        query = query.limit(limit)
+    return query.all()
 
 def get_project_service(db, project_id, user_id: int):
     project = get_project_by_id(db, project_id)

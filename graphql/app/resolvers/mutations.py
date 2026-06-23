@@ -64,7 +64,7 @@ def resolve_update_task(_, info, id, input):
     db = info.context["db"]
     if not user:
         raise Exception("Not authenticated")
-    return update_task_service(db, id, input.get("title"), input.get("projectId"), user.id)
+    return update_task_service(db, id, input.get("title"), input.get("projectId"), input.get("done"), user.id)
 
 
 @mutation.field("deleteTask")

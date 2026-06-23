@@ -23,6 +23,7 @@ def resolve_users(_, info):
     if user.role != "admin":
         raise Exception("Admin access required")
     return list_users_service(db)
+    
 
 
 @query.field("user")
@@ -37,22 +38,12 @@ def resolve_user(_, info, id):
 
 
 @query.field("projects")
-def resolve_projects(_, info):
+def resolve_projects(_, info, limit=None, offset=None):
     user = info.context["user"]
     db = info.context["db"]
     if not user:
         raise Exception("Not authenticated")
-    return list_projects_service(db, user.id)
-
-
-@query.field("project")
-def resolve_project(_, info, id):
-    user = info.context["user"]
-    db = info.context["db"]
-    if not user:
-        raise Exception("Not authenticated")
-    return get_project_service(db, id, user.id)
-
+    return list_projects_service(db, user.id, limit, offset)
 
 @query.field("projectTasks")
 def resolve_project_tasks(_, info, projectId):

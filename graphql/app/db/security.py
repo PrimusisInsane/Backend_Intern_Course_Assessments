@@ -4,7 +4,7 @@ from app.core.config import settings
 import jwt
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 1 day
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 1 whole day expiring time
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
