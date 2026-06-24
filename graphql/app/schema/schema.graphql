@@ -21,6 +21,15 @@ type Task {
   projectId: Int!
 }
 
+type ActivityLog {
+  id: Int!
+  userId: Int!
+  taskId: Int!
+  action: String!
+  detail: String
+  createdAt: String!
+}
+
 type AuthPayload {
   accessToken: String!
   tokenType: String!
@@ -30,13 +39,19 @@ type Query {
   me: User!
   users: [User!]!
   user(id: Int!): User!
+  taskLogs(taskId: Int!): [ActivityLog!]!
+  projectLogs(projectId: Int!): [ActivityLog!]!
 
   projects(limit: Int, offset: Int): [Project!]!
   project(id: Int!): Project!
   projectTasks(projectId: Int!): [Task!]!
+  getProjectById(id: Int!): Project!
+  searchProjects(keyword: String!): [Project!]!
 
  tasks(limit: Int, offset: Int, done: Boolean): [Task!]!
   task(id: Int!): Task!
+  getTaskById(id: Int!): Task!
+  searchTasks(keyword: String!): [Task!]!
 }
 
 input RegisterInput {
@@ -81,4 +96,5 @@ type Mutation {
   createTask(input: CreateTaskInput!): Task!
   updateTask(id: Int!, input: UpdateTaskInput!): Task!
   deleteTask(id: Int!): Boolean!
+  changeTaskStatus(id: Int!, done: Boolean!): Task!
 }

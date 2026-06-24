@@ -6,10 +6,12 @@ from app.schema.type_defs import type_defs
 from app.schema.context import get_context
 from app.resolvers.queries import query, task_type
 from app.resolvers.mutations import mutation
+from app.resolvers.queries import query, task_type, activity_log_type
 
 from app.models import user_model, project_model, task_model, membership_model
 
-schema = make_executable_schema(type_defs, query, mutation, task_type)
+schema = make_executable_schema(type_defs, query, mutation, task_type, activity_log_type)
+
 
 graphql_app = GraphQL(schema, context_value=get_context, debug=True)
 

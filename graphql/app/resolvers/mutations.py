@@ -1,7 +1,9 @@
 from ariadne import MutationType
 from app.services.auth_service import register_service, login_service
 from app.services.project_service import create_project_service, update_project_service, delete_project_service
-from app.services.task_service import create_task_service, update_task_service, delete_task_service
+from app.services.task_service import (
+    create_task_service, update_task_service, delete_task_service, change_task_status_service
+)
 from app.db.security import create_access_token
 
 mutation = MutationType()
@@ -37,7 +39,8 @@ def resolve_update_project(_, info, id, input):
     db = info.context["db"]
     if not user:
         raise Exception("Not authenticated")
-    return update_project_service(db, id, input.get("name"), user.id)
+    is_admin = user.role == "admin"
+    return update_project_service(db, id, input.get("name"), user.id, is_admin)
 
 
 @mutation.field("deleteProject")
@@ -46,7 +49,8 @@ def resolve_delete_project(_, info, id):
     db = info.context["db"]
     if not user:
         raise Exception("Not authenticated")
-    return delete_project_service(db, id, user.id)
+    is_admin = user.role == "admin"
+    return delete_project_service(db, id, user.id, is_admin)
 
 
 @mutation.field("createTask")
@@ -64,7 +68,10 @@ def resolve_update_task(_, info, id, input):
     db = info.context["db"]
     if not user:
         raise Exception("Not authenticated")
-    return update_task_service(db, id, input.get("title"), input.get("projectId"), input.get("done"), user.id)
+    is_admin = user.role == "admin"
+    return update_task_service(
+        db, id, input.get("title"), input.get("projectId"), input.get("done"), user.id, is_admin
+    )
 
 
 @mutation.field("deleteTask")
@@ -73,4 +80,15 @@ def resolve_delete_task(_, info, id):
     db = info.context["db"]
     if not user:
         raise Exception("Not authenticated")
-    return delete_task_service(db, id, user.id)
+    is_admin = user.role == "admin"
+    return delete_task_service(db, id, user.id, is_admin)
+
+
+@mutation.field("changeTaskStatus")
+def resolve_change_task_status(_, info, id, done):
+    user = info.context["user"]
+    db = info.context["db"]
+    if not user:
+        raise Exception("Not authenticated")
+    is_admin = user.role == "admin"
+    return change_task_status_service(db, id, done, user.id, is_admin)
