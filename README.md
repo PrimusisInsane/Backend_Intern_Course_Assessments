@@ -81,6 +81,25 @@ This was the real backend project for the program, building directly on Week 3's
 
 ---
 
+
+## Week 5: GraphQL as the Main Backend (Ariadne)
+
+This week replaced the REST layer built in Week 4 with a GraphQL API, while keeping the existing authentication, hashing, and ownership logic completely intact underneath.
+
+**What I learned:**
+- Setting up Ariadne as a schema-first GraphQL library, where the `.graphql` file is the single source of truth for the API's shape, and Python only provides the resolvers that fulfill it
+- Defining `type`, `input`, `Query`, and `Mutation` blocks in GraphQL's own syntax (SDL), separate from any Python code
+- Writing resolvers using `QueryType()` and `MutationType()` for top-level fields, and `ObjectType("TypeName")` for resolving individual fields on a specific type (e.g. mapping a model's `user_id` to GraphQL's `userId` convention)
+- Building a request-scoped context object (`info.context`) that carries the current user, database session, and other shared resources into every resolver — functionally the same purpose as FastAPI's `Depends()`, just built once per request instead of injected per-route
+- Confirming that the existing `services/` and `repositories/` layers from Week 4 needed almost no changes — the same `create_task_service`, `register_service`, and ownership-check functions were called from GraphQL resolvers exactly as they had been called from REST routes, proving that business logic genuinely doesn't need to know which protocol is calling it
+- Adding pagination (`limit`/`offset`) and filtering (e.g. `done: Boolean`) as optional arguments directly on GraphQL queries
+- Implementing admin-override logic so admin roles can bypass ownership checks and see all records, while regular users remain restricted to their own data — applied consistently across both the REST-era functions and their GraphQL callers
+- Debugging schema/resolver mismatches, including a case where a correctly written and correctly registered resolver still failed to run due to stale cached Python bytecode, which reinforced the importance of fully clean rebuilds when something behaves inexplicably
+
+**What I liked most:** Seeing the REST-to-GraphQL migration actually prove out the layered architecture from Week 3 — the service layer didn't care whether it was being called from a FastAPI route or an Ariadne resolver, which made the earlier investment in separating concerns feel concretely justified rather than just "good practice" on paper.
+
+---
+
 ## Overall Progression
 
 Across the four weeks, the work moved from Python basics with a local SQLite database, to building structured REST APIs with FastAPI, to persistent PostgreSQL storage with a proper layered architecture, and finally to a cloud-hosted, authenticated, and authorized backend on AWS RDS closely mirroring how a real-world production backend is built up in stages. I think that's what I actually liked the most. It resembles actual backend work.
