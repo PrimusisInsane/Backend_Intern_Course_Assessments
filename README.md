@@ -5,6 +5,7 @@
 * Week 2 - FastAPI and Starlette
 * Week 3 - Databases(Postgres/MongoDB) & Alembic
 * Week 4 - Django Reference and FastAPI main backend
+* Week 5 - GraphQL as the main-backend 
 
 
 
