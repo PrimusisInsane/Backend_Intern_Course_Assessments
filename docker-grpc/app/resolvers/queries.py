@@ -9,7 +9,7 @@ from app.services.task_service import (
 )
 from app.repositories.activity_log_repo import get_logs_for_task, get_logs_for_project
 from app.db.redis import cache_get, cache_set, redis_client
-
+from app.models.task_model import Task
 
 query = QueryType()
 
@@ -74,6 +74,15 @@ def resolve_project(_, info, id):
         raise Exception("Not authenticated")
     is_admin = user.role == "admin"
     return get_project_service(db, id, user.id, is_admin)
+
+project_type = ObjectType("Project")
+
+@project_type.field("tasks")
+def resolve_project_field_tasks(project, info):
+    if isinstance(project, dict):
+        return []
+    db = info.context["db"]
+    return db.query(Task).filter(Task.project_id == project.id).all()
 
 
 @query.field("getProjectById")
@@ -148,6 +157,8 @@ def resolve_task(_, info, id):
     return get_task_service(db, id, user.id, is_admin)
 
 
+
+
 @query.field("getTaskById")
 def resolve_get_task_by_id(_, info, id):
     user = info.context["user"]
@@ -217,3 +228,7 @@ async def resolve_redis_health(_, info):
     except Exception as e:
         return f"fail: {str(e)}"
 
+
+@project_type.field("tasks")
+def resolve_project_field_tasks(project, info):
+    return []
