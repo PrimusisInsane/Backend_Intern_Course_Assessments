@@ -4,7 +4,10 @@ from app.db.database import SessionLocal
 from app.db.mongo import activity_feed_collection
 from app.repositories.activity_log_repo import create_log
 from datetime import datetime, timezone
+import logging
 
+logging.getLogger("arq").setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 async def write_activity_log(ctx, user_id: int, action: str, task_id: int = None, project_id: int = None, detail: str = None):
     db = SessionLocal()
