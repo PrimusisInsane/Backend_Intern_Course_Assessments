@@ -45,6 +45,7 @@ type Query {
   projectLogs(projectId: Int!): [ActivityLog!]!
 
   redisHealth: String!
+  dbHealth: String!
 
   projects(limit: Int, offset: Int): [Project!]!
   project(id: Int!): Project!

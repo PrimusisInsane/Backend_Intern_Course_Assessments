@@ -1,14 +1,14 @@
-import grpc
-from concurrent import futures
-import sys
 import os
+import sys
+from concurrent import futures
+
+import grpc
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from proto import user_lookup_pb2
-from proto import user_lookup_pb2_grpc
 from app.db.database import SessionLocal
 from app.repositories.user_repo import get_user_by_id
+from proto import user_lookup_pb2, user_lookup_pb2_grpc
 
 
 class UserLookupServicer(user_lookup_pb2_grpc.UserLookupServiceServicer):
@@ -19,11 +19,7 @@ class UserLookupServicer(user_lookup_pb2_grpc.UserLookupServiceServicer):
             if not user:
                 return user_lookup_pb2.UserLookupResponse(found=False)
             return user_lookup_pb2.UserLookupResponse(
-                id=user.id,
-                name=user.name,
-                email=user.email,
-                role=user.role,
-                found=True
+                id=user.id, name=user.name, email=user.email, role=user.role, found=True
             )
         finally:
             db.close()

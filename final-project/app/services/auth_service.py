@@ -1,7 +1,9 @@
-from sqlalchemy.orm import Session
-from app.repositories.user_repo import get_user_by_email, create_user
-from app.db.security import hash_password, verify_password, create_access_token
 from fastapi import HTTPException
+from sqlalchemy.orm import Session
+
+from app.db.security import create_access_token, hash_password, verify_password
+from app.repositories.user_repo import create_user, get_user_by_email
+
 
 def register_service(db: Session, name: str, email: str, age: int, password: str):
     existing_user = get_user_by_email(db, email)
@@ -9,6 +11,7 @@ def register_service(db: Session, name: str, email: str, age: int, password: str
         raise HTTPException(status_code=400, detail="Email already registered")
     hashed = hash_password(password)
     return create_user(db, name, email, age, hashed)
+
 
 def login_service(db: Session, email: str, password: str):
     user = get_user_by_email(db, email)

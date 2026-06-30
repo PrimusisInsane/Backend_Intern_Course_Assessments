@@ -1,10 +1,18 @@
 from ariadne import MutationType
-from app.services.auth_service import register_service, login_service
-from app.services.project_service import create_project_service, update_project_service, delete_project_service
-from app.services.task_service import (
-    create_task_service, update_task_service, delete_task_service, change_task_status_service
-)
+
 from app.db.security import create_access_token
+from app.services.auth_service import login_service, register_service
+from app.services.project_service import (
+    create_project_service,
+    delete_project_service,
+    update_project_service,
+)
+from app.services.task_service import (
+    change_task_status_service,
+    create_task_service,
+    delete_task_service,
+    update_task_service,
+)
 
 mutation = MutationType()
 
@@ -75,7 +83,14 @@ async def resolve_update_task(_, info, id, input):
         raise Exception("Not authenticated")
     is_admin = user.role == "admin"
     return await update_task_service(
-        db, id, input.get("title"), input.get("projectId"), input.get("done"), user.id, redis_pool, is_admin
+        db,
+        id,
+        input.get("title"),
+        input.get("projectId"),
+        input.get("done"),
+        user.id,
+        redis_pool,
+        is_admin,
     )
 
 

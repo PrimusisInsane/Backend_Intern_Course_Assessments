@@ -1,11 +1,11 @@
-import grpc
-import sys
 import os
+import sys
+
+import grpc
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from proto import user_lookup_pb2
-from proto import user_lookup_pb2_grpc
+from proto import user_lookup_pb2, user_lookup_pb2_grpc
 
 
 def get_user(user_id: int):

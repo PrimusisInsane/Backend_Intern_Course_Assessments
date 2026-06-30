@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package userlookup;
+
+service UserLookupService {
+  rpc GetUser (UserLookupRequest) returns (UserLookupResponse);
+}
+
+message UserLookupRequest {
+  int32 user_id = 1;
+}
+
+message UserLookupResponse {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  string role = 4;
+  bool found = 5;
+}

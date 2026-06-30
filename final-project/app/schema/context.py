@@ -1,7 +1,8 @@
 from app.db.database import SessionLocal
+from app.db.redis import get_arq_pool, redis_client
 from app.db.security import decode_access_token
 from app.repositories.user_repo import get_user_by_id
-from app.db.redis import get_arq_pool, redis_client
+
 
 async def get_context(request, data=None):
     db = SessionLocal()

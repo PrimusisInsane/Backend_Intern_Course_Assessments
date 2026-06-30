@@ -1,15 +1,16 @@
-from ariadne import QueryType, ObjectType
-from app.services.user_service import list_users_service, get_user_by_id_service
-from app.services.project_service import (
-    list_projects_service, get_project_service, get_project_tasks_service,
-    search_projects_service
-)
-from app.services.task_service import (
-    list_tasks_service, get_task_service, search_tasks_service
-)
-from app.repositories.activity_log_repo import get_logs_for_task, get_logs_for_project
+from ariadne import ObjectType, QueryType
+
 from app.db.redis import cache_get, cache_set, redis_client
 from app.models.task_model import Task
+from app.repositories.activity_log_repo import get_logs_for_project, get_logs_for_task
+from app.services.project_service import (
+    get_project_service,
+    get_project_tasks_service,
+    list_projects_service,
+    search_projects_service,
+)
+from app.services.task_service import get_task_service, list_tasks_service, search_tasks_service
+from app.services.user_service import get_user_by_id_service, list_users_service
 
 query = QueryType()
 
@@ -49,7 +50,6 @@ def resolve_user(_, info, id):
 async def resolve_projects(_, info, limit=None, offset=None):
     user = info.context["user"]
     db = info.context["db"]
-    cache = info.context["cache"]
     if not user:
         raise Exception("Not authenticated")
     is_admin = user.role == "admin"
@@ -65,7 +65,6 @@ async def resolve_projects(_, info, limit=None, offset=None):
     return serialized
 
 
-
 @query.field("project")
 def resolve_project(_, info, id):
     user = info.context["user"]
@@ -75,7 +74,9 @@ def resolve_project(_, info, id):
     is_admin = user.role == "admin"
     return get_project_service(db, id, user.id, is_admin)
 
+
 project_type = ObjectType("Project")
+
 
 @project_type.field("tasks")
 def resolve_project_field_tasks(project, info):
@@ -128,7 +129,6 @@ def resolve_project_logs(_, info, projectId):
 async def resolve_tasks(_, info, limit=None, offset=None, done=None):
     user = info.context["user"]
     db = info.context["db"]
-    cache = info.context["cache"]
     if not user:
         raise Exception("Not authenticated")
     is_admin = user.role == "admin"
@@ -140,7 +140,13 @@ async def resolve_tasks(_, info, limit=None, offset=None, done=None):
 
     result = list_tasks_service(db, user.id, is_admin, limit, offset, done)
     serialized = [
-        {"id": t.id, "title": t.title, "done": t.done, "userId": t.user_id, "projectId": t.project_id}
+        {
+            "id": t.id,
+            "title": t.title,
+            "done": t.done,
+            "userId": t.user_id,
+            "projectId": t.project_id,
+        }
         for t in result
     ]
     await cache_set(cache_key, serialized, ttl=60)
@@ -155,8 +161,6 @@ def resolve_task(_, info, id):
         raise Exception("Not authenticated")
     is_admin = user.role == "admin"
     return get_task_service(db, id, user.id, is_admin)
-
-
 
 
 @query.field("getTaskById")
@@ -188,8 +192,8 @@ def resolve_task_logs(_, info, taskId):
     return get_logs_for_task(db, taskId)
 
 
-
 task_type = ObjectType("Task")
+
 
 @task_type.field("userId")
 def resolve_task_user_id(task, info):
@@ -197,21 +201,26 @@ def resolve_task_user_id(task, info):
         return task.get("userId")
     return task.user_id
 
+
 @task_type.field("projectId")
 def resolve_task_project_id(task, info):
     if isinstance(task, dict):
         return task.get("projectId")
     return task.project_id
 
+
 activity_log_type = ObjectType("ActivityLog")
+
 
 @activity_log_type.field("userId")
 def resolve_log_user_id(log, info):
     return log.user_id
 
+
 @activity_log_type.field("taskId")
 def resolve_log_task_id(log, info):
     return log.task_id
+
 
 @activity_log_type.field("createdAt")
 def resolve_log_created_at(log, info):
@@ -229,6 +238,13 @@ async def resolve_redis_health(_, info):
         return f"fail: {str(e)}"
 
 
-@project_type.field("tasks")
-def resolve_project_field_tasks(project, info):
-    return []
+@query.field("dbHealth")
+def resolve_db_health(_, info):
+    from app.db.database import engine
+
+    try:
+        conn = engine.connect()
+        conn.close()
+        return "ok"
+    except Exception as e:
+        return f"fail: {str(e)}"

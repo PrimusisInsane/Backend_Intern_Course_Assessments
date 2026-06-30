@@ -1,11 +1,18 @@
 import json
+
 import redis.asyncio as redis
 from arq.connections import RedisSettings, create_pool
+
 from app.core.config import settings
 
-redis_client = redis.from_url(settings.REDIS_URL, decode_responses=True)
+if not settings.REDIS_URL:
+    raise RuntimeError("REDIS_URL is not set. Check your .env file.")
 
-arq_redis_settings = RedisSettings.from_dsn(settings.REDIS_URL)
+REDIS_URL: str = settings.REDIS_URL
+
+redis_client = redis.from_url(REDIS_URL, decode_responses=True)
+
+arq_redis_settings = RedisSettings.from_dsn(REDIS_URL)
 
 
 async def get_arq_pool():

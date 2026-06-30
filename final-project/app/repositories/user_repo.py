@@ -1,5 +1,7 @@
-from app.models.user_model import User
 from sqlalchemy.orm import Session
+
+from app.models.user_model import User
+
 
 def create_user(db: Session, name: str, email: str, age: int, password: str, role: str = "member"):
     user = User(name=name, email=email, age=age, password=password, role=role)
@@ -8,12 +10,14 @@ def create_user(db: Session, name: str, email: str, age: int, password: str, rol
     db.refresh(user)
     return user
 
+
 def get_users(db: Session):
     return db.query(User).all()
 
 
 def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
+
 
 def delete_user(db: Session, user_id: int):
     user = db.query(User).filter(User.id == user_id).first()
@@ -23,10 +27,20 @@ def delete_user(db: Session, user_id: int):
         return True
     return False
 
+
 def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
 
-def update_user(db: Session, user_id: int, name: str = None, email: str = None, age: int = None, password: str = None, role: str = None):
+
+def update_user(
+    db: Session,
+    user_id: int,
+    name: str = None,
+    email: str = None,
+    age: int = None,
+    password: str = None,
+    role: str = None,
+):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         return None
