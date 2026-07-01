@@ -8,4 +8,7 @@ venv/
 .vscode/
 alembic/versions/__pycache__/
 .env~
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
 
